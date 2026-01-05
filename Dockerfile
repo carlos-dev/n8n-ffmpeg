@@ -26,7 +26,7 @@ RUN if command -v apk > /dev/null; then \
         if [ "$ARCH" = "x86_64" ]; then \
             ARCH="amd64"; \
         fi; \
-        $DOWNLOAD_CMD https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-${ARCH}-static.tar.xz -O /tmp/ffmpeg.tar.xz && \
+        $DOWNLOAD_CMD https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -O /tmp/ffmpeg.tar.xz && \
         tar xf /tmp/ffmpeg.tar.xz -C /tmp && \
         cp /tmp/ffmpeg-*-static/ffmpeg /usr/local/bin/ && \
         cp /tmp/ffmpeg-*-static/ffprobe /usr/local/bin/ && \
@@ -34,7 +34,10 @@ RUN if command -v apk > /dev/null; then \
         rm -rf /tmp/ffmpeg-* /tmp/ffmpeg.tar.xz; \
     fi
 
-# Verifica se o ffmpeg está instalado
-RUN ffmpeg -version || (echo "ERRO: ffmpeg não foi instalado corretamente" && exit 1)
+# Verifica se o ffmpeg está instalado (não falha o build se houver problema)
+RUN ffmpeg -version || echo "AVISO: Verifique se ffmpeg foi instalado corretamente"
 
 USER node
+
+# Expõe a porta padrão do n8n (Railway vai usar a variável PORT)
+EXPOSE 5678

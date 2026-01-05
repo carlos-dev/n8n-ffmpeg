@@ -47,7 +47,7 @@ RUN chown -R node:node /home/node && \
     mkdir -p /home/node/.n8n && \
     chown -R node:node /home/node/.n8n
   
-  USER node
+  USER root
   
 # Expõe a porta padrão do n8n (Railway vai usar a variável PORT)
 EXPOSE 5678

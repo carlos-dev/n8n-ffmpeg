@@ -1,7 +1,7 @@
-FROM n8nio/n8n:latest
-
-USER root
-
+  FROM n8nio/n8n:latest
+  
+  USER root
+  
 # Detecta qual gerenciador de pacotes está disponível e instala ffmpeg
 RUN if command -v apk > /dev/null; then \
         apk add --no-cache ffmpeg; \
@@ -37,7 +37,17 @@ RUN if command -v apk > /dev/null; then \
 # Verifica se o ffmpeg está instalado (não falha o build se houver problema)
 RUN ffmpeg -version || echo "AVISO: Verifique se ffmpeg foi instalado corretamente"
 
-USER node
+# Cria o diretório /data e garante permissões corretas para o usuário node
+RUN mkdir -p /data && \
+    chown -R node:node /data && \
+    chmod -R 755 /data
 
+# Garante que o diretório home do node também tenha permissões corretas
+RUN chown -R node:node /home/node && \
+    mkdir -p /home/node/.n8n && \
+    chown -R node:node /home/node/.n8n
+  
+  USER node
+  
 # Expõe a porta padrão do n8n (Railway vai usar a variável PORT)
 EXPOSE 5678
